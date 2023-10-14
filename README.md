@@ -1,6 +1,10 @@
 # Pretty
 Ai projects
 
+## Layer normalization
+
+If a layer is used to values between 0 and 1, and the next layer is used to values between 0 and 1000, the loss function will oscilate too much, and the network will have a hard time learning.
+So we normalize the values around 0 with a variance of 1.
 
 ## Encoder
 
