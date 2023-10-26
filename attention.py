@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torch.nn import functional as F
-import Math
+import math
 
 class SelfAttention(nn.Module):
   def __init__(self, nb_heads: int, d_embed: int, in_proj_bias=True, out_proj_bias=True):
@@ -20,10 +20,10 @@ class SelfAttention(nn.Module):
 
     intermim_shape = (batch_size, sequence_length, self.n_heads, self.d_head)
 
-    # (Batch_Size, Sequence_Length, Dim) To (Batch_Size, Sequence_Length, Dim * 3) -> 3 tensorsof shape (Batch_Size, Sequence_Length, Dim)
+    # (Batch_Size, Sequence_Length, Dim) To (Batch_Size, Sequence_Length, Dim * 3) -> 3 tensors of shape (Batch_Size, Sequence_Length, Dim)
     q, k, v = self.in_proj(x).chunk(3, dim=-1)
 
-    # (Batch_Size, Sequence_Length, Dim) To (Batch_Size, Sequence_Length, Heads, Dim / Heads) -> (Batch_Size, Heads, Sequence_Length, Dim / Heads)
+    # (Batch_Size, Sequence_Length, Dim) To (Batch_Size, Sequence_Length, Heads, Dim / Heads) To (Batch_Size, Heads, Sequence_Length, Dim / Heads)
     q = q.view(intermim_shape).transpose(1, 2)
     k = k.view(intermim_shape).transpose(1, 2)
     v = v.view(intermim_shape).transpose(1, 2)
@@ -34,7 +34,7 @@ class SelfAttention(nn.Module):
     if causal_mask:
       mask =torch.ones_like(weight, dtype=torch.bool).triu(1)
       weight.masked_fill_(mask, -torch.inf)
-      weight /= Math.sqrt(self.d_head)
+      weight /= math.sqrt(self.d_head)
       weight = F.softmax(weight, dim=-1)
 
       # (Batch_Size, Sequence_Length, Sequence_Length) To (Batch_Size, Heads, Sequence_Length, Dimension / Heads) To (Batch_Size, Heads, Sequence_Length, Dimension / Heads)
