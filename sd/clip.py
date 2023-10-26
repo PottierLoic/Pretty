@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from torch.nn import functional as F
-from attention import SelfAttention
+from sd.attention import SelfAttention
 
 class CLIPEmbedding(nn.Module):
   def __init__(self, n_vocab: int, n_embed: int, n_tokens: int):
@@ -21,8 +21,8 @@ class CLIPLayer(nn.Module):
     self.layer_norm_1 = nn.LayerNorm(n_embed)
     self.attention = SelfAttention(n_head, n_embed)
     self.layer_norm_2 = nn.LayerNorm(n_embed)
-    self.linear_1 = nn.Linear(n_embed, 4 * n_embed)
-    self.linear_2 = nn.Linear(4 * n_embed, n_embed)
+    self.linear_1 = nn.Linear(n_embed, n_embed * 4)
+    self.linear_2 = nn.Linear(n_embed * 4, n_embed)
 
   def forward(self, x: torch.Tensor) ->  torch.Tensor:
     # (Batch_Size, Sequence_lenght, Dimension)
